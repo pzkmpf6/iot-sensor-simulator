@@ -1,7 +1,6 @@
-from monitor import SensorMonitor
-from sensors import TemperatureSensor, CPUSensor
 import time
-cat > main.py << 'EOF'
+from sensors import TemperatureSensor, CPUSensor
+from monitor import SensorMonitor
 
 
 sensors = [
@@ -14,9 +13,7 @@ monitor = SensorMonitor(sensors, interval=3)
 
 try:
     monitor.start()
-    # keep main thread alive while background threads work
     while True:
         time.sleep(1)
 except KeyboardInterrupt:
     monitor.stop()
-EOF
