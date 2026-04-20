@@ -1,16 +1,7 @@
+from monitor import SensorMonitor
 from sensors import TemperatureSensor, CPUSensor
-from database import DatabaseLogger
-
-
-def print_status(status):
-    if status["warning"]:
-        label = "WARNING!"
-    else:
-        label = "OK"
-
-    print(f"[{label}] {status['name']}: {status['value']} {status['unit']} (limit: {status['threshold']})")
-    print(f"  time: {status['time']}")
-    print()
+import time
+cat > main.py << 'EOF'
 
 
 sensors = [
@@ -19,19 +10,13 @@ sensors = [
     CPUSensor("My PC")
 ]
 
-db = DatabaseLogger()
+monitor = SensorMonitor(sensors, interval=3)
 
-print("=== Smart Home Monitor ===\n")
-
-for sensor in sensors:
-    status = sensor.get_status()
-    print_status(status)
-    db.log(status)
-
-print("--- Last 5 records from DB ---")
-for row in db.get_history(limit=5):
-    name, value, unit, warning, timestamp = row
-    flag = "(!)" if warning else "   "
-    print(f"{flag} {timestamp} | {name}: {value} {unit}")
-
-db.close()
+try:
+    monitor.start()
+    # keep main thread alive while background threads work
+    while True:
+        time.sleep(1)
+except KeyboardInterrupt:
+    monitor.stop()
+EOF
