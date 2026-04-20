@@ -1,6 +1,6 @@
-import time
 from sensors import TemperatureSensor, CPUSensor
 from monitor import SensorMonitor
+from dashboard import run_dashboard
 
 
 sensors = [
@@ -11,9 +11,4 @@ sensors = [
 
 monitor = SensorMonitor(sensors, interval=3)
 
-try:
-    monitor.start()
-    while True:
-        time.sleep(1)
-except KeyboardInterrupt:
-    monitor.stop()
+run_dashboard(monitor)
